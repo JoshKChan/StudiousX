@@ -1,0 +1,29 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Home">
+
+
+    <Button android:id="@+id/home_button_courses"
+        android:text="Courses"
+        android:onClick="clickEvent_courses"
+        android:textColor="#FFFFFF"
+        android:background="#2ecc71"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1" />
+
+    <Button android:id="@+id/home_button_settings"
+        android:text="Settings"
+        android:onClick="clickEvent_settings"
+        android:textColor="#FFFFFF"
+        android:background="#3498db"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"/>
+
+
+</LinearLayout>
