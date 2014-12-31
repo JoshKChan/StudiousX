@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="holoRed">#FF4444</color>
+    <color name="holoGreen">#99CC00</color>
+    <color name="holoBlue">#33B5E5</color>
+    <color name="holoYellow">#FFBB33</color>
+    <color name="holoPurple">#AA66CC</color>
+    <color name="rowDefault">#99CC00</color>
+
+    <array name="colors">
+        <item>#33B5E5</item>
+        <item>#99CC00</item>
+        <item>#FFBB33</item>
+        <item>#FF4444</item>
+        <item>#AA66CC</item>
+    </array>
+
+</resources>

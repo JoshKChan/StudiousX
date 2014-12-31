@@ -78,9 +78,8 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
     }
 
     //Returns a collection of all the files in courses
-    public Collection<File> getCourseFiles(){
-        ArrayList<File> files = new ArrayList<File>(Arrays.asList(getCoursesDir().listFiles()));
-        return files;
+    public ArrayList<File> getCourseFiles(){
+        return new ArrayList<File>(Arrays.asList(getCoursesDir().listFiles()));
     }
 
 }
