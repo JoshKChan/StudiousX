@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jkc.studiousx.ListAdapters.CourseAdapter;
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidFileManager;
@@ -30,10 +35,60 @@ public class ActivityCourses extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
 
-        //Set adapter
+        //Set adapter//////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////
         StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
         courseAdapter = new CourseAdapter(this,sAFM.getCourseFiles());
         setListAdapter(courseAdapter);
+        //Set list-view mouse listeners////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        AdapterView.OnItemClickListener listItemClick = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView parent, View v, int position, long id) {
+                //TODO open course
+            }
+        };
+        ListView listview = getListView();
+        listview.setOnItemClickListener(listItemClick);
+        registerForContextMenu(listview);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
+        super.onCreateContextMenu(menu,v,menuInfo);
+        AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        Object object = courseAdapter.getItem(acmi.position);
+        if(object instanceof File){
+            File file = (File) object;
+            menu.setHeaderTitle(file.getName());
+        }else{
+            menu.setHeaderTitle("??? " + acmi.position);
+        }
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.context_menu_courses,menu);
+    }
+
+    //TODO Finish this http://www.mikeplate.com/2010/01/21/show-a-context-menu-for-long-clicks-in-an-android-listview/
+    @Override
+    public boolean onContextItemSelected(MenuItem item){
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        int menuItemIndex = item.getItemId();
+        int listItemIndex = info.position;
+        String message = listItemIndex+" Default:"+menuItemIndex;
+        switch (menuItemIndex){
+            case R.id.courses_contextmenu_open:
+                message = (listItemIndex+" Open "+menuItemIndex);
+                break;
+            case R.id.courses_contextmenu_edit:
+                message = (listItemIndex+" Edit "+menuItemIndex);
+                break;
+            case R.id.courses_contextmenu_delete:
+                message = (listItemIndex+" Delete "+menuItemIndex);
+                deleteCourse(listItemIndex);
+                break;
+        }
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     @Override
@@ -51,7 +106,33 @@ public class ActivityCourses extends ListActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void openCourse(int index){
+
+    }
+
+    public void editCourse(int index){
+
+    }
+
+    public void deleteCourse(int index){
+        Object object = courseAdapter.getItem(index);
+        if(object instanceof File){
+            courseAdapter.remove(object);
+            courseAdapter.notifyDataSetChanged();
+            StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
+            boolean success = sAFM.deleteFile((File)object);
+            if(success){
+                Toast.makeText(this,"Course deleted successfully",Toast.LENGTH_SHORT);
+            }else{
+                Toast.makeText(this,"Error during deletion",Toast.LENGTH_SHORT);
+            }
+        }
+    }
+
+
+
     public void addPress(View view){
+        editText = (EditText)findViewById(R.id.courses_edittext);
         String text = editText.getText().toString();
         editText.setText("");
         StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);

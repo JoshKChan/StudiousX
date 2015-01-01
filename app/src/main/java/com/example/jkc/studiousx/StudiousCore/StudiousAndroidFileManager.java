@@ -82,4 +82,23 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         return new ArrayList<File>(Arrays.asList(getCoursesDir().listFiles()));
     }
 
+    //TODO Keep an eye on this. Seems like it works. Tested with directories and subdirectories. NOT tested with actual files.
+    public boolean deleteFile(File file){
+        boolean success = false;
+        if(file!=null && file.exists()){
+            if(file.isDirectory()){
+                File[] files = file.listFiles();
+                if(files!=null){
+                    for (File f: files){
+                        deleteFile(f);
+                    }
+                    success = file.delete();
+                }
+            }else{
+                success = file.delete();
+            }
+        }
+        return success;
+    }
+
 }
