@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.jkc.studiousx.ListAdapters.CourseAdapter;
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidFileManager;
+import com.example.jkc.studiousx.StudiousCore.StudiousAndroidManifest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class ActivityCourses extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courses);
-
+        editText = (EditText)findViewById(R.id.courses_edittext);
         //Set adapter//////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////
         StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
@@ -115,28 +116,31 @@ public class ActivityCourses extends ListActivity {
     }
 
     public void deleteCourse(int index){
-        Object object = courseAdapter.getItem(index);
-        if(object instanceof File){
+        File object = courseAdapter.getItem(index);
+        StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
+        boolean success = sAFM.deleteFile((File)object);
+        if(success){
+            Toast.makeText(this,"Course deleted successfully",Toast.LENGTH_SHORT).show();
             courseAdapter.remove(object);
             courseAdapter.notifyDataSetChanged();
-            StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
-            boolean success = sAFM.deleteFile((File)object);
-            if(success){
-                Toast.makeText(this,"Course deleted successfully",Toast.LENGTH_SHORT);
-            }else{
-                Toast.makeText(this,"Error during deletion",Toast.LENGTH_SHORT);
-            }
+        }else{
+            Toast.makeText(this,"Error during deletion",Toast.LENGTH_SHORT).show();
         }
     }
 
-
-
     public void addPress(View view){
-        editText = (EditText)findViewById(R.id.courses_edittext);
         String text = editText.getText().toString();
-        editText.setText("");
-        StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
-        sAFM.createCourse(text);
+        if(text!=null&&!text.isEmpty()) {
+            editText.setText("");
+            //Directory creation
+            StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
+            int result = sAFM.createCourse(text);
+            if(result == 0) {
+                File file = sAFM.findCourseDir(text);
+                courseAdapter.add(file);
+                courseAdapter.notifyDataSetChanged();
+            }
+        }
     }
 
 }

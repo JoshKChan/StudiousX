@@ -4,8 +4,12 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,13 +65,19 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         If such a folder already exists, return 2. Otherwise attempt to create the folder.
         If we can create it, return 0. If mkdir fails, return 1.
 
+        //TODO Refector consideration: Return the File obj created instead?...
+            Would be easier to add to array-adapter in relevant Activities.
+                But then lose error feedback?
+                    -Solution: Track error feedback in log file
      */
     public int createCourse(String name){
         int out = 0;
         File newCourse = new File(getCoursesDir()+"/"+name);
         if(!newCourse.exists()){
             if(newCourse.mkdir()){
-                out = 0;
+                if(writeManifest(newCourse,name)){
+                    out = 0;
+                }
             }else{
                 out = 1;
             }
@@ -80,6 +90,27 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
     //Returns a collection of all the files in courses
     public ArrayList<File> getCourseFiles(){
         return new ArrayList<File>(Arrays.asList(getCoursesDir().listFiles()));
+    }
+
+    /**
+     * Return a file with matching name.
+     *
+     * @param name Name of the directory to look return.
+     * @return     The directory with matching name.
+     *             Null if the directory cannot be found.
+     */
+    public File findCourseDir(String name){
+        File file = null;
+        ArrayList<File> files = getCourseFiles();
+        if(files!=null && !files.isEmpty()){
+            for (File f:files){
+                if(f.getName().equals(name)){
+                    file = f;
+                    break;
+                }
+            }
+        }
+        return file;
     }
 
     //TODO Keep an eye on this. Seems like it works. Tested with directories and subdirectories. NOT tested with actual files.
@@ -97,6 +128,26 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
             }else{
                 success = file.delete();
             }
+        }
+        return success;
+    }
+
+    private boolean writeManifest(File file, String name){
+        boolean success = false;
+        //Manifest
+        StudiousAndroidManifest manifest = new StudiousAndroidManifest(name);
+        String xml = manifest.getXMLString();
+
+        try {
+            File outputFile = new File(file.getAbsolutePath(), "manifest.xml");
+            Writer writer = new BufferedWriter(new FileWriter(outputFile));
+            writer.write(xml);
+            writer.close();
+            Toast.makeText(context,"Course created successfully",Toast.LENGTH_SHORT).show();
+            success = true;
+        }catch (Exception e){
+            Toast.makeText(context,"Error creating course...",Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
         return success;
     }

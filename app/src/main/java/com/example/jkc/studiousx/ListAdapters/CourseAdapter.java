@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Created by Joshua on 31/12/2014.
  */
-public class CourseAdapter extends ArrayAdapter {
+public class CourseAdapter extends ArrayAdapter<File> {
 
     private ArrayList<File> data;
 
