@@ -15,19 +15,54 @@ import java.util.Date;
  */
 public class StudiousAndroidManifest {
 
-    private static final String TAG_MANIFEST = "manifest";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_CHAPTERS = "chapters";
-    private static final String TAG_DATE_CREATION = "creation_date";
+    public static final String TAG_MANIFEST = "manifest";
+    public static final String TAG_NAME = "name";
+    public static final String TAG_CHAPTERS = "chapters";
+    public static final String TAG_DATE_CREATION = "creation_date";
 
     private String name;
     private int chapterCount;
     private String creationDate;
 
-    public StudiousAndroidManifest(String name){
+    public StudiousAndroidManifest(){
         this.name = name;
         chapterCount = 0;
         creationDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+    }
+
+    public StudiousAndroidManifest(String iCreationDate){
+        this();
+        creationDate = iCreationDate;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public int getChapterCount(){
+        return chapterCount;
+    }
+
+    public String getCreationDate(){
+        return creationDate;
+    }
+
+    public void setName(String newName){
+        name = newName;
+    }
+
+    public void setChapterCount(int newCount){
+        chapterCount = newCount;
+    }
+
+    public static StudiousAndroidManifest createFromScaffold(ManifestScaffold scaffold){
+        StudiousAndroidManifest manifest = null;
+        if(scaffold!=null && scaffold.isValid()){
+            manifest = new StudiousAndroidManifest(scaffold.creationDate);
+            manifest.setName(scaffold.name);
+            manifest.setChapterCount(scaffold.chapterCount);
+        }
+        return manifest;
     }
 
     public String getXMLString(){
@@ -36,7 +71,6 @@ public class StudiousAndroidManifest {
         StringWriter stringWriter = new StringWriter();
         try{
             xmlSerializer.setOutput(stringWriter);
-            xmlSerializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
             xmlSerializer.startDocument("UTF-8",true);
             xmlSerializer.startTag("",TAG_MANIFEST);
             //Course Name

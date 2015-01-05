@@ -26,9 +26,7 @@ import java.util.Collection;
 
 public class ActivityCourses extends ListActivity {
 
-    private TextView logTV;
     private EditText editText;
-
     private CourseAdapter courseAdapter;
 
     @Override
@@ -58,9 +56,8 @@ public class ActivityCourses extends ListActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
         super.onCreateContextMenu(menu,v,menuInfo);
         AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        Object object = courseAdapter.getItem(acmi.position);
-        if(object instanceof File){
-            File file = (File) object;
+        File file = courseAdapter.getItem(acmi.position);
+        if(file != null){
             menu.setHeaderTitle(file.getName());
         }else{
             menu.setHeaderTitle("??? " + acmi.position);
@@ -69,7 +66,6 @@ public class ActivityCourses extends ListActivity {
         inflater.inflate(R.menu.context_menu_courses,menu);
     }
 
-    //TODO Finish this http://www.mikeplate.com/2010/01/21/show-a-context-menu-for-long-clicks-in-an-android-listview/
     @Override
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
@@ -116,12 +112,12 @@ public class ActivityCourses extends ListActivity {
     }
 
     public void deleteCourse(int index){
-        File object = courseAdapter.getItem(index);
+        File file = courseAdapter.getItem(index);
         StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
-        boolean success = sAFM.deleteFile((File)object);
+        boolean success = sAFM.deleteFile(file);
         if(success){
             Toast.makeText(this,"Course deleted successfully",Toast.LENGTH_SHORT).show();
-            courseAdapter.remove(object);
+            courseAdapter.remove(file);
             courseAdapter.notifyDataSetChanged();
         }else{
             Toast.makeText(this,"Error during deletion",Toast.LENGTH_SHORT).show();

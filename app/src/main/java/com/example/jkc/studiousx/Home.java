@@ -59,7 +59,7 @@ public class Home extends Activity {
     }
 
     private void initialize(){
-        externalAttempt();
+        //externalAttempt();
         //StudiousAndroidFileManager safm = new StudiousAndroidFileManager(this);
         //safm.initialize();
         Intent intent = new Intent(this, ActivityCourses.class);

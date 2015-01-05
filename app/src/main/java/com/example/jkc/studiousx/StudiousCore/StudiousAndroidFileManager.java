@@ -3,11 +3,15 @@ package com.example.jkc.studiousx.StudiousCore;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Xml;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -113,6 +117,72 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         return file;
     }
 
+    //TODO renameCourse
+
+    /**
+     * Changes both the name of a course's directory and the name stored
+     * in that directory's manifest file.
+     *
+     * @param course    The name of the course before changing the name.
+     * @param newName   The new name for the course.
+     */
+    public void renameCourse(String course, String newName){
+
+    }
+
+    public StudiousAndroidManifest getManifestFromCourse(File inFile){
+        StudiousAndroidManifest manifest = null;
+        File file = new File(inFile.getAbsolutePath()+"/manifest.xml");
+        if(file!=null && file.exists()){
+            if(file.getAbsolutePath().contains(getCoursesDir().getAbsolutePath())){
+                try {
+                    FileInputStream inStream = new FileInputStream(file);
+                    XmlPullParser parser = Xml.newPullParser();
+                    parser.setInput(inStream,null);
+                    manifest = generateManifest(parser);
+                    inStream.close();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }else{
+                Log.e("sAFM-getManifestFromCourse","File not in courses dir\n"+file.getAbsolutePath()+"\n"+getCoursesDir().getAbsolutePath());
+            }
+        }
+        return manifest;
+    }
+
+    //TODO Clean
+    private StudiousAndroidManifest generateManifest(XmlPullParser parser){
+        StudiousAndroidManifest manifest = null;
+        ManifestScaffold scaffold = new ManifestScaffold();
+        try {
+            int eventType = parser.next();
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if(eventType == XmlPullParser.START_TAG && !parser.getName().equals(StudiousAndroidManifest.TAG_MANIFEST)){
+                   String tagName = parser.getName();
+                    eventType = parser.next();
+                    if(eventType == XmlPullParser.TEXT) {
+                        String tagValue = parser.getText();
+                        if (tagName.equals(StudiousAndroidManifest.TAG_NAME)) {
+                            scaffold.name = tagValue;
+                        } else if (tagName.equals(StudiousAndroidManifest.TAG_CHAPTERS)) {
+                            scaffold.chapterCount = Integer.parseInt(tagValue);
+                        } else if (tagName.equals(StudiousAndroidManifest.TAG_DATE_CREATION)) {
+                            scaffold.creationDate = tagValue;
+                        }
+                    }
+                }//if start of tag
+                eventType = parser.next();
+            }//while
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(scaffold.isValid()){
+            manifest = StudiousAndroidManifest.createFromScaffold(scaffold);
+        }
+        return manifest;
+    }
+
     //TODO Keep an eye on this. Seems like it works. Tested with directories and subdirectories. NOT tested with actual files.
     public boolean deleteFile(File file){
         boolean success = false;
@@ -135,7 +205,8 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
     private boolean writeManifest(File file, String name){
         boolean success = false;
         //Manifest
-        StudiousAndroidManifest manifest = new StudiousAndroidManifest(name);
+        StudiousAndroidManifest manifest = new StudiousAndroidManifest();
+        manifest.setName(name);
         String xml = manifest.getXMLString();
 
         try {

@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.jkc.studiousx.R;
+import com.example.jkc.studiousx.StudiousCore.StudiousAndroidFileManager;
+import com.example.jkc.studiousx.StudiousCore.StudiousAndroidManifest;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,8 +44,14 @@ public class CourseAdapter extends ArrayAdapter<File> {
 
         if(!data.isEmpty()) {
             File file = data.get(position);
+            StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(getContext());
+            StudiousAndroidManifest sAM = sAFM.getManifestFromCourse(file);
+            if(sAM!=null){
+                String description = "Chapters: "+sAM.getChapterCount()+"\nCreated: "+sAM.getCreationDate();
+                viewHolder.description.setText(description);
+            }
             viewHolder.title.setText(file.getName());
-            viewHolder.description.setText(file.getAbsolutePath());
+            //viewHolder.description.setText(file.getAbsolutePath());
         }
         return convertView;
     }
