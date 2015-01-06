@@ -19,12 +19,29 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.jkc.studiousx.ActivityCourses"
+            android:name="com.example.jkc.studiousx.ActivityCourseSelection"
             android:label="@string/title_activity_activity_courses"
             android:parentActivityName="com.example.jkc.studiousx.Home" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jkc.studiousx.Home" />
+        </activity>
+        <activity
+            android:name="com.example.jkc.studiousx.ActivityCourse"
+            android:label="@string/title_activity_activity_course"
+            android:parentActivityName="com.example.jkc.studiousx.ActivityCourseSelection"
+            android:windowSoftInputMode="stateHidden" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jkc.studiousx.ActivityCourseSelection" />
+        </activity>
+        <activity
+            android:name="com.example.jkc.studiousx.EditCourse"
+            android:label="@string/title_activity_edit_course"
+            android:parentActivityName="com.example.jkc.studiousx.ActivityCourseSelection" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jkc.studiousx.ActivityCourseSelection" />
         </activity>
     </application>
 

@@ -1,9 +1,8 @@
 package com.example.jkc.studiousx;
 
-import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,19 +11,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.jkc.studiousx.ListAdapters.CourseAdapter;
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidFileManager;
-import com.example.jkc.studiousx.StudiousCore.StudiousAndroidManifest;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 
 
-public class ActivityCourses extends ListActivity {
+public class ActivityCourseSelection extends ListActivity {
+
+    public static final String EXTRA_COURSE_PATH = "com.jkc.studious.EXTRA_COURSE_PATH";
 
     private EditText editText;
     private CourseAdapter courseAdapter;
@@ -32,7 +29,7 @@ public class ActivityCourses extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_courses);
+        setContentView(R.layout.activity_courseselection);
         editText = (EditText)findViewById(R.id.courses_edittext);
         //Set adapter//////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////
@@ -45,11 +42,20 @@ public class ActivityCourses extends ListActivity {
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 //TODO open course
+                openCourse(position);
             }
         };
         ListView listview = getListView();
         listview.setOnItemClickListener(listItemClick);
         registerForContextMenu(listview);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        courseAdapter.clear();
+        courseAdapter.addAll(new StudiousAndroidFileManager(this).getCourseFiles());
+        courseAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -75,9 +81,11 @@ public class ActivityCourses extends ListActivity {
         switch (menuItemIndex){
             case R.id.courses_contextmenu_open:
                 message = (listItemIndex+" Open "+menuItemIndex);
+                openCourse(listItemIndex);
                 break;
             case R.id.courses_contextmenu_edit:
                 message = (listItemIndex+" Edit "+menuItemIndex);
+                editCourse(listItemIndex);
                 break;
             case R.id.courses_contextmenu_delete:
                 message = (listItemIndex+" Delete "+menuItemIndex);
@@ -90,7 +98,7 @@ public class ActivityCourses extends ListActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_activity_courses, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_courseselection, menu);
         return true;
     }
 
@@ -104,11 +112,17 @@ public class ActivityCourses extends ListActivity {
     }
 
     public void openCourse(int index){
-
+        File file = courseAdapter.getItem(index);
+        Intent intent = new Intent(this, ActivityCourse.class);
+        intent.putExtra(EXTRA_COURSE_PATH,file.getAbsolutePath());
+        startActivity(intent);
     }
 
     public void editCourse(int index){
-
+        File file = courseAdapter.getItem(index);
+        Intent intent = new Intent(this,EditCourse.class);
+        intent.putExtra(EXTRA_COURSE_PATH,file.getAbsolutePath());
+        startActivity(intent);
     }
 
     public void deleteCourse(int index){

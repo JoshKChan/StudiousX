@@ -8,14 +8,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.jkc.studiousx.StudiousCore.StudiousAndroidFileManager;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 
 
 /*
@@ -62,7 +55,7 @@ public class Home extends Activity {
         //externalAttempt();
         //StudiousAndroidFileManager safm = new StudiousAndroidFileManager(this);
         //safm.initialize();
-        Intent intent = new Intent(this, ActivityCourses.class);
+        Intent intent = new Intent(this, ActivityCourseSelection.class);
         startActivity(intent);
     }
 

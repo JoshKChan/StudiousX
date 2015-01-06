@@ -7,7 +7,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.example.jkc.studiousx.ActivityCourses">
+    tools:context="com.example.jkc.studiousx.ActivityCourseSelection">
 
 
     <LinearLayout
@@ -35,8 +35,9 @@
         android:layout_height="match_parent"
         android:divider="@android:color/transparent"
         android:dividerHeight="15dp"/>
-    <TextView
-        android:text="No courses"
+
+    <TextView   android:id="@android:id/empty"
+        android:text="You've got no courses!"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

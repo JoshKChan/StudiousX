@@ -25,7 +25,6 @@ public class StudiousAndroidManifest {
     private String creationDate;
 
     public StudiousAndroidManifest(){
-        this.name = name;
         chapterCount = 0;
         creationDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
@@ -92,6 +91,24 @@ public class StudiousAndroidManifest {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * Used to see if a manifest represents a valid course that could be used
+     * to create a course folder.
+     * The necessary requirements is that the manifest itself must exist, and that
+     * it must have a valid name.
+     * @param manifest  The manifest to check.
+     * @return          Returns true if the manifest is valid, false if it is not.
+     */
+    public static boolean isValid(StudiousAndroidManifest manifest){
+        boolean valid = false;
+        if(manifest!=null
+                && manifest.getName()!=null
+                && !manifest.getName().isEmpty()){
+            valid = true;
+        }
+        return valid;
     }
 
 }

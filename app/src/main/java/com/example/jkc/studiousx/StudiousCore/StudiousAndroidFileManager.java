@@ -1,10 +1,8 @@
 package com.example.jkc.studiousx.StudiousCore;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 import android.util.Xml;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -16,7 +14,6 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Created by Joshua on 21/12/2014.
@@ -35,17 +32,7 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         this.context = context;
     }
 
-    public void initialize(){
-
-    }
-
-
-
     //Android Interfacing ////////////////////////////////////////////////////
-
-    private void debugPrint(String message){
-        Log.e("SAFM",message);
-    }
 
     public File getBaseDir(){
         return context.getExternalFilesDir(null);
@@ -97,6 +84,21 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
     }
 
     /**
+     * Create a course using a given manifest.
+     * @param manifest  The manifest to base the course off of.
+     */
+    public void createCourseFromManifest(StudiousAndroidManifest manifest){
+        if(StudiousAndroidManifest.isValid(manifest)){
+            String courseName = manifest.getName();
+            File newCourse = new File(getCoursesDir()+"/"+courseName);
+            if(!newCourse.exists()){
+                newCourse.mkdir();
+                rewriteManifest(newCourse,manifest);
+            }
+        }
+    }
+
+    /**
      * Return a file with matching name.
      *
      * @param name Name of the directory to look return.
@@ -118,7 +120,6 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
     }
 
     //TODO renameCourse
-
     /**
      * Changes both the name of a course's directory and the name stored
      * in that directory's manifest file.
@@ -133,7 +134,7 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
     public StudiousAndroidManifest getManifestFromCourse(File inFile){
         StudiousAndroidManifest manifest = null;
         File file = new File(inFile.getAbsolutePath()+"/manifest.xml");
-        if(file!=null && file.exists()){
+        if(file.exists()){
             if(file.getAbsolutePath().contains(getCoursesDir().getAbsolutePath())){
                 try {
                     FileInputStream inStream = new FileInputStream(file);
@@ -219,6 +220,39 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         }catch (Exception e){
             Toast.makeText(context,"Error creating course...",Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+        }
+        return success;
+    }
+
+    public boolean rewriteManifest(File courseFolder, StudiousAndroidManifest manifest){
+        boolean success = false;
+        if(courseFolder.exists() && StudiousAndroidManifest.isValid(manifest)){
+            try{
+                String xml = manifest.getXMLString();
+                File manifestFile = new File(courseFolder.getAbsolutePath(),"manifest.xml");
+                Writer writer = new BufferedWriter(new FileWriter(manifestFile));
+                writer.write(xml);
+                writer.close();
+                String newPath = getCoursesDir().getAbsolutePath()+"/"+manifest.getName();
+                Toast.makeText(context,"Course changed successfully",Toast.LENGTH_SHORT).show();
+                success = courseFolder.renameTo(new File(newPath));
+            }catch (Exception e){
+                e.printStackTrace();
+                Toast.makeText(context,"Error changing course. Changes not saved.",Toast.LENGTH_SHORT).show();
+            }
+        }
+        return success;
+    }
+
+    public boolean rewriteManifest(String oldName ,StudiousAndroidManifest manifest){
+        boolean success = false;
+        if(manifest!=null && manifest.getName()!=null){
+            File file = findCourseDir(oldName);
+            if(file!=null) {
+                success = rewriteManifest(file, manifest);
+            }else{
+                Log.e("sAFM","rewriteManifest, could not find dir matching manifest name");
+            }
         }
         return success;
     }
