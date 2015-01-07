@@ -1,10 +1,12 @@
 package com.example.jkc.studiousx.ListAdapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.jkc.studiousx.R;
@@ -36,6 +38,7 @@ public class CourseAdapter extends ArrayAdapter<File> {
 
             viewHolder.title = (TextView) convertView.findViewById(R.id.rowlayout_course_title);
             viewHolder.description = (TextView) convertView.findViewById(R.id.rowlayout_course_description);
+            viewHolder.titleBack = (LinearLayout) convertView.findViewById(R.id.rowlayout_course_title_back);
 
             convertView.setTag(viewHolder);
         }else{
@@ -45,13 +48,18 @@ public class CourseAdapter extends ArrayAdapter<File> {
         if(!data.isEmpty()) {
             File file = data.get(position);
             StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(getContext());
-            StudiousAndroidManifest sAM = sAFM.getManifestFromCourse(file);
-            if(sAM!=null){
-                String description = "Chapters: "+sAM.getChapterCount()+"\nCreated: "+sAM.getCreationDate();
+            StudiousAndroidManifest manifest = sAFM.getManifestFromCourse(file);
+            if(manifest!=null){
+                String description = "Chapters: "+manifest.getChapterCount()+"\nCreated: "+manifest.getCreationDate();
                 viewHolder.description.setText(description);
+
+                //Set color
+                String colorString = manifest.getColorString();
+                if(colorString!=null && !colorString.isEmpty()){
+                    viewHolder.titleBack.setBackgroundColor(Color.parseColor(colorString));
+                }
             }
             viewHolder.title.setText(file.getName());
-            //viewHolder.description.setText(file.getAbsolutePath());
         }
         return convertView;
     }
@@ -59,6 +67,7 @@ public class CourseAdapter extends ArrayAdapter<File> {
     private static class ViewHolder{
         public TextView title;
         public TextView description;
+        public LinearLayout titleBack;
     }
 
 }

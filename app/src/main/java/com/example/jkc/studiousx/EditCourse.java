@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /*
-
+        TODO Allow spinner selection to actually add color data to the manifest
  */
 public class EditCourse extends Activity {
 
@@ -88,6 +88,7 @@ public class EditCourse extends Activity {
         if(originalManifest!= null){
             String oldName = originalManifest.getName();
             originalManifest.setName(viewHolder.nameField.getText().toString());
+            originalManifest.setColorMain(colorSpinnerManager.getHexString());
             StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
             sAFM.rewriteManifest(oldName,originalManifest);
         }else{
@@ -95,6 +96,7 @@ public class EditCourse extends Activity {
             scaffold.name = viewHolder.nameField.getText().toString();
             scaffold.chapterCount = 0;
             scaffold.creationDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            scaffold.color = colorSpinnerManager.getHexString();
             StudiousAndroidManifest newManifest = StudiousAndroidManifest.createFromScaffold(scaffold);
             StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
             sAFM.createCourseFromManifest(newManifest);

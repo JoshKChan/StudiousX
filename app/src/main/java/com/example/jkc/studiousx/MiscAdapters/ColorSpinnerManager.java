@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.jkc.studiousx.R;
 
@@ -35,6 +36,7 @@ public class ColorSpinnerManager {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id){
                 colorIndex = pos;
+                getColor();
             }
             public void onNothingSelected(AdapterView<?> parent){
                 //Do nothing
@@ -44,8 +46,12 @@ public class ColorSpinnerManager {
 
     public int getColor(){
         int out = colorArray.getColor(colorIndex,R.color.rowDefault);
-        //toast("Color output = "+out);
         return out;
+    }
+
+    public String getHexString(){
+        int out = colorArray.getColor(colorIndex,R.color.rowDefault);
+        return "#"+Integer.toHexString(out);
     }
 
     public void setSelectionFromColorID(int id){

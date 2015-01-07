@@ -8,11 +8,13 @@ public class ManifestScaffold {
         public String name;
         public int chapterCount = -1;
         public String creationDate;
+        public String color;
 
         public ManifestScaffold(){
             name = null;
             chapterCount = -1;
             creationDate = null;
+            color = "";
         }
 
         public boolean isValid(){
@@ -23,7 +25,11 @@ public class ManifestScaffold {
 
         @Override
         public String toString(){
-            return name+"<>"+chapterCount+"<>"+creationDate;
+            String out = name+"<>"+chapterCount+"<>"+creationDate;
+            if(color!=null){
+                out+="<>"+color;
+            }
+            return out;
         }
 
 }

@@ -170,6 +170,8 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
                             scaffold.chapterCount = Integer.parseInt(tagValue);
                         } else if (tagName.equals(StudiousAndroidManifest.TAG_DATE_CREATION)) {
                             scaffold.creationDate = tagValue;
+                        } else if (tagName.equals(StudiousAndroidManifest.TAG_COLOR_MAIN)){
+                            scaffold.color = tagValue;
                         }
                     }
                 }//if start of tag
@@ -240,6 +242,8 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
                 e.printStackTrace();
                 Toast.makeText(context,"Error changing course. Changes not saved.",Toast.LENGTH_SHORT).show();
             }
+        }else{
+            Log.e("sAFM","Invalid manifest passed to rewriteManifest");
         }
         return success;
     }

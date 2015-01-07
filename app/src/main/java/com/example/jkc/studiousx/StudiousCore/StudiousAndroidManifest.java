@@ -17,15 +17,18 @@ public class StudiousAndroidManifest {
 
     public static final String TAG_MANIFEST = "manifest";
     public static final String TAG_NAME = "name";
+    public static final String TAG_COLOR_MAIN = "color_main";
     public static final String TAG_CHAPTERS = "chapters";
     public static final String TAG_DATE_CREATION = "creation_date";
 
     private String name;
+    private String colorMain;
     private int chapterCount;
     private String creationDate;
 
     public StudiousAndroidManifest(){
         chapterCount = 0;
+        colorMain = "";
         creationDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
     }
 
@@ -50,6 +53,10 @@ public class StudiousAndroidManifest {
         name = newName;
     }
 
+    public void setColorMain(String color){
+        colorMain = color;
+    }
+
     public void setChapterCount(int newCount){
         chapterCount = newCount;
     }
@@ -60,6 +67,7 @@ public class StudiousAndroidManifest {
             manifest = new StudiousAndroidManifest(scaffold.creationDate);
             manifest.setName(scaffold.name);
             manifest.setChapterCount(scaffold.chapterCount);
+            manifest.setColorMain(scaffold.color);
         }
         return manifest;
     }
@@ -76,6 +84,10 @@ public class StudiousAndroidManifest {
             xmlSerializer.startTag("",TAG_NAME);
             xmlSerializer.text(name);
             xmlSerializer.endTag("", TAG_NAME);
+            //Colors
+            xmlSerializer.startTag("",TAG_COLOR_MAIN);
+            xmlSerializer.text(colorMain);
+            xmlSerializer.endTag("", TAG_COLOR_MAIN);
             //Chapter Count
             xmlSerializer.startTag("",TAG_CHAPTERS);
             xmlSerializer.text(Integer.toString(chapterCount));
@@ -104,8 +116,26 @@ public class StudiousAndroidManifest {
     public static boolean isValid(StudiousAndroidManifest manifest){
         boolean valid = false;
         if(manifest!=null
+                && manifest.isColorMainValid()
                 && manifest.getName()!=null
                 && !manifest.getName().isEmpty()){
+            valid = true;
+        }
+        return valid;
+    }
+
+    public int getColorAsInt(){
+        return Integer.parseInt(colorMain.substring(colorMain.indexOf("0x")),16);
+    }
+
+    public String getColorString(){
+        return colorMain;
+    }
+
+    //Colour just need not be null to avoid crashing. In cases where blank colors are found, defaults are used.
+    private boolean isColorMainValid(){
+        boolean valid = false;
+        if(colorMain!=null){
             valid = true;
         }
         return valid;
