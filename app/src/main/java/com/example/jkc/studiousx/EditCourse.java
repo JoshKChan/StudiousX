@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.jkc.studiousx.MiscAdapters.ColorSpinnerManager;
 import com.example.jkc.studiousx.StudiousCore.ManifestScaffold;
@@ -23,8 +22,6 @@ import java.util.Date;
         TODO Allow spinner selection to actually add color data to the manifest
  */
 public class EditCourse extends Activity {
-
-    public static final String EXTRA_EDIT_COURSE_PATH = "com.jkc.studious.editcoursepath";
 
     private ViewHolder viewHolder;
     private ColorSpinnerManager colorSpinnerManager;
@@ -47,6 +44,8 @@ public class EditCourse extends Activity {
                 setTitle("Edit Course");
                 originalManifest = manifest;
                 viewHolder.nameField.setText(manifest.getName());
+                //do color
+                colorSpinnerManager.setSelection(manifest.getColorString());
             }
         }else{
             setTitle("New Course");

@@ -1,12 +1,10 @@
 package com.example.jkc.studiousx.StudiousCore;
 
-import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.StringWriter;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -122,10 +120,6 @@ public class StudiousAndroidManifest {
             valid = true;
         }
         return valid;
-    }
-
-    public int getColorAsInt(){
-        return Integer.parseInt(colorMain.substring(colorMain.indexOf("0x")),16);
     }
 
     public String getColorString(){

@@ -1,6 +1,7 @@
 package com.example.jkc.studiousx.StudiousCore;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
@@ -34,13 +35,18 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
 
     //Android Interfacing ////////////////////////////////////////////////////
 
-    public File getBaseDir(){
+    //Exists so we can switch to internal memory easily
+    private File getBaseDir(){
         return context.getExternalFilesDir(null);
     }
 
-    public File getCoursesDir(){
-        File coursesFolder = new File(getBaseDir().getAbsolutePath()+COURSES_PATH_EXT);
-        if(!coursesFolder.exists()){
+    private File getCoursesDir(){
+        File baseDir = getBaseDir();
+        String path = baseDir.getAbsolutePath();
+        path += COURSES_PATH_EXT;
+        //File coursesFolder = new File(getBaseDir().getAbsolutePath()+COURSES_PATH_EXT);
+        File coursesFolder = new File(path);
+        if (!coursesFolder.exists()) {
             coursesFolder.mkdir();
         }
         return coursesFolder;
@@ -117,18 +123,6 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
             }
         }
         return file;
-    }
-
-    //TODO renameCourse
-    /**
-     * Changes both the name of a course's directory and the name stored
-     * in that directory's manifest file.
-     *
-     * @param course    The name of the course before changing the name.
-     * @param newName   The new name for the course.
-     */
-    public void renameCourse(String course, String newName){
-
     }
 
     public StudiousAndroidManifest getManifestFromCourse(File inFile){

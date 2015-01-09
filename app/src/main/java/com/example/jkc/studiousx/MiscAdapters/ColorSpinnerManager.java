@@ -64,4 +64,18 @@ public class ColorSpinnerManager {
         colorIndex = index;
         spinner.setSelection(index);
     }
+
+    private String getHexStringFromArray(int index){
+        int number = colorArray.getColor(index,-1);
+        return "#"+Integer.toHexString(number);
+    }
+
+    public void setSelection(String color){
+        for(int i=0;i<colorArray.length();i++){
+            if(color.equals(getHexStringFromArray(i))){
+                spinner.setSelection(i);
+                break;
+            }
+        }
+    }
 }

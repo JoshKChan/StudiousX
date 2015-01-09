@@ -17,6 +17,8 @@ import java.io.File;
 
 public class ActivityCourse extends Activity {
 
+    private StudiousAndroidManifest manifest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,12 +30,18 @@ public class ActivityCourse extends Activity {
             StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
             setTitle(file.getName());
 
-            StudiousAndroidManifest manifest = sAFM.getManifestFromCourse(file);
+            manifest = sAFM.getManifestFromCourse(file);
             if(manifest!=null){
 
             }
 
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
     }
 
 
@@ -46,6 +54,14 @@ public class ActivityCourse extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if(id == R.id.action_editCourse){
+            if(manifest!=null) {
+                File file = new StudiousAndroidFileManager(this).findCourseDir(manifest.getName());
+                Intent intent = new Intent(this, EditCourse.class);
+                intent.putExtra(ActivityCourseSelection.EXTRA_COURSE_PATH,file.getAbsolutePath());
+                startActivity(intent);
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 }
