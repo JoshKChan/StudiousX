@@ -1,5 +1,6 @@
 package com.example.jkc.studiousx;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,13 +16,20 @@ import android.widget.Toast;
 
 import com.example.jkc.studiousx.ListAdapters.CourseAdapter;
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidFileManager;
+import com.example.jkc.studiousx.StudiousCore.StudiousAndroidManifest;
 
 import java.io.File;
 
-
+/*
+    TOOD -Make Manifest parcelable
+         -Implement ForResult on ActivityCourse and ActivityCourseSelection
+         -Implement ForResult on EditCourse
+ */
 public class ActivityCourseSelection extends ListActivity {
 
     public static final String EXTRA_COURSE_PATH = "com.jkc.studious.EXTRA_COURSE_PATH";
+    private static final int REQUEST_NEW_COURSE = 100;
+    private static final int REQUEST_EDIT_COURSE = 101;
 
     private EditText editText;
     private CourseAdapter courseAdapter;
@@ -89,22 +97,17 @@ public class ActivityCourseSelection extends ListActivity {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
         int listItemIndex = info.position;
-        String message = listItemIndex+" Default:"+menuItemIndex;
         switch (menuItemIndex){
             case R.id.courses_contextmenu_open:
-                message = (listItemIndex+" Open "+menuItemIndex);
                 openCourse(listItemIndex);
                 break;
             case R.id.courses_contextmenu_edit:
-                message = (listItemIndex+" Edit "+menuItemIndex);
                 editCourse(listItemIndex);
                 break;
             case R.id.courses_contextmenu_delete:
-                message = (listItemIndex+" Delete "+menuItemIndex);
                 deleteCourse(listItemIndex);
                 break;
         }
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -124,9 +127,53 @@ public class ActivityCourseSelection extends ListActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //todo clean this sick filth
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode == REQUEST_NEW_COURSE){
+            String toastText = "Undefined result creating course";
+            if(resultCode == Activity.RESULT_OK){
+                StudiousAndroidManifest newManifest = data.getParcelableExtra(EditCourse.EXTRA_MANIFEST_OUT);
+                if(StudiousAndroidManifest.isValid(newManifest)){
+                    StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
+                    sAFM.createCourseFromManifest(newManifest);
+                    courseAdapter.add(newManifest);
+                    courseAdapter.notifyDataSetChanged();
+                    toastText = "Course created";
+                }else{
+                    toastText = "Error creating course, invalid manifest";
+                }
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                toastText = "Error creating course";
+            }
+            Toast.makeText(this,toastText,Toast.LENGTH_SHORT).show();
+        }else if(requestCode == REQUEST_EDIT_COURSE){
+            String toastText = "Undefined result editing course";
+            if(resultCode == Activity.RESULT_OK){
+                StudiousAndroidManifest newManifest = data.getParcelableExtra(EditCourse.EXTRA_MANIFEST_OUT);
+                if(StudiousAndroidManifest.isValid(newManifest)){
+                    String oldCourseName = data.getStringExtra(EditCourse.EXTRA_MANIFEST_OLD);
+                    StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
+                    sAFM.rewriteManifest(oldCourseName,newManifest);
+                    File oldCourse = sAFM.findCourseDir(oldCourseName);
+                    courseAdapter.remove(oldCourse);
+                    courseAdapter.add(sAFM.findCourseDir(newManifest.getName()));
+                    courseAdapter.notifyDataSetChanged();
+                    toastText = "Changes to course saved";
+                }else{
+                    toastText = "Error editing course, invalid manifest";
+                }
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                toastText = "Error editing course";
+            }
+            Toast.makeText(this,toastText,Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public void createNewCourse(){
         Intent intent = new Intent(this,EditCourse.class);
-        startActivity(intent);
+        startActivityForResult(intent,REQUEST_NEW_COURSE);
     }
 
     public void openCourse(int index){
@@ -140,7 +187,7 @@ public class ActivityCourseSelection extends ListActivity {
         File file = courseAdapter.getItem(index);
         Intent intent = new Intent(this,EditCourse.class);
         intent.putExtra(EXTRA_COURSE_PATH,file.getAbsolutePath());
-        startActivity(intent);
+        startActivityForResult(intent,REQUEST_EDIT_COURSE);
     }
 
     public void deleteCourse(int index){

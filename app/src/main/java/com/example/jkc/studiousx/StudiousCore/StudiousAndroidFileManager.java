@@ -230,7 +230,7 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
                 writer.write(xml);
                 writer.close();
                 String newPath = getCoursesDir().getAbsolutePath()+"/"+manifest.getName();
-                Toast.makeText(context,"Course changed successfully",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"Course changed successfully",Toast.LENGTH_SHORT).show();
                 success = courseFolder.renameTo(new File(newPath));
             }catch (Exception e){
                 e.printStackTrace();

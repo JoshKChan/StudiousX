@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidFileManager;
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidManifest;
@@ -16,6 +17,8 @@ import java.io.File;
 
 
 public class ActivityCourse extends Activity {
+
+    private static final int REQUEST_EDIT_COURSE = 100;
 
     private StudiousAndroidManifest manifest;
 
@@ -59,9 +62,32 @@ public class ActivityCourse extends Activity {
                 File file = new StudiousAndroidFileManager(this).findCourseDir(manifest.getName());
                 Intent intent = new Intent(this, EditCourse.class);
                 intent.putExtra(ActivityCourseSelection.EXTRA_COURSE_PATH,file.getAbsolutePath());
-                startActivity(intent);
+                startActivityForResult(intent,REQUEST_EDIT_COURSE);
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode == REQUEST_EDIT_COURSE){
+            String toastText = "Undefined result editing course";
+            if(resultCode == Activity.RESULT_OK){
+                StudiousAndroidManifest newManifest = data.getParcelableExtra(EditCourse.EXTRA_MANIFEST_OUT);
+                if(StudiousAndroidManifest.isValid(newManifest)){
+                    StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
+                    sAFM.rewriteManifest(manifest.getName(),newManifest);
+                    manifest = newManifest;
+                    setTitle(manifest.getName());
+                }else{
+                    toastText = "Error editing course, invalid manifest";
+                }
+                toastText = "Changes to course saved";
+            }else if(resultCode == Activity.RESULT_CANCELED){
+                toastText = "Error editing course";
+            }
+            Toast.makeText(this,toastText,Toast.LENGTH_SHORT).show();
+        }
     }
 }

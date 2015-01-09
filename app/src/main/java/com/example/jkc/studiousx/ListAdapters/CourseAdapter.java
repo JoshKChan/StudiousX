@@ -28,6 +28,14 @@ public class CourseAdapter extends ArrayAdapter<File> {
         this.data = data;
     }
 
+    public void add(StudiousAndroidManifest manifest){
+        StudiousAndroidFileManager sAFm = new StudiousAndroidFileManager(getContext());
+        File file = sAFm.findCourseDir(manifest.getName());
+        add(file);
+    }
+
+
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent){
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);

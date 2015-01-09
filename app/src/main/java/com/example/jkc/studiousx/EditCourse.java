@@ -3,6 +3,7 @@ package com.example.jkc.studiousx;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +19,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/*
-        TODO Allow spinner selection to actually add color data to the manifest
- */
 public class EditCourse extends Activity {
+
+    public static final String EXTRA_MANIFEST_OUT = "com.jkc.studious.MANIFEST_OUTPUT_EDITCOURSE";
+    public static final String EXTRA_MANIFEST_OLD = "com.jkc.studious.MANIFEST_OLD_NAME";
 
     private ViewHolder viewHolder;
     private ColorSpinnerManager colorSpinnerManager;
@@ -84,21 +85,26 @@ public class EditCourse extends Activity {
     }
 
     public void acceptButton(View view){
+        Intent intent = new Intent();
+        StudiousAndroidManifest outputManifest;
         if(originalManifest!= null){
-            String oldName = originalManifest.getName();
+            intent.putExtra(EXTRA_MANIFEST_OLD,originalManifest.getName());
             originalManifest.setName(viewHolder.nameField.getText().toString());
             originalManifest.setColorMain(colorSpinnerManager.getHexString());
-            StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
-            sAFM.rewriteManifest(oldName,originalManifest);
+            outputManifest = originalManifest;
         }else{
             ManifestScaffold scaffold = new ManifestScaffold();
             scaffold.name = viewHolder.nameField.getText().toString();
             scaffold.chapterCount = 0;
             scaffold.creationDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             scaffold.color = colorSpinnerManager.getHexString();
-            StudiousAndroidManifest newManifest = StudiousAndroidManifest.createFromScaffold(scaffold);
-            StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
-            sAFM.createCourseFromManifest(newManifest);
+            outputManifest = StudiousAndroidManifest.createFromScaffold(scaffold);
+        }
+        if(StudiousAndroidManifest.isValid(outputManifest)){
+            intent.putExtra(EXTRA_MANIFEST_OUT,outputManifest);
+            setResult(Activity.RESULT_OK,intent);
+        }else{
+            setResult(Activity.RESULT_CANCELED,intent);
         }
         finish();
     }

@@ -1,5 +1,7 @@
 package com.example.jkc.studiousx.StudiousCore;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlSerializer;
@@ -11,7 +13,7 @@ import java.util.Date;
 /**
  * Created by Joshua on 01/01/2015.
  */
-public class StudiousAndroidManifest {
+public class StudiousAndroidManifest implements Parcelable{
 
     public static final String TAG_MANIFEST = "manifest";
     public static final String TAG_NAME = "name";
@@ -134,5 +136,35 @@ public class StudiousAndroidManifest {
         }
         return valid;
     }
+
+    //////////////////////////////////////////////////////////////////////////
+    //Parcelable Interface
+
+    private StudiousAndroidManifest(Parcel in){
+        this();
+        this.name = in.readString();
+        this.colorMain = in.readString();
+        this.creationDate = in.readString();
+        this.chapterCount = in.readInt();
+    }
+
+    @Override
+    public int describeContents(){
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i){
+        parcel.writeString(name);
+        parcel.writeString(colorMain);
+        parcel.writeString(creationDate);
+        parcel.writeInt(chapterCount);
+    }
+
+    public static final Parcelable.Creator<StudiousAndroidManifest> CREATOR
+            = new Parcelable.Creator<StudiousAndroidManifest>(){
+        public StudiousAndroidManifest createFromParcel(Parcel in){return new StudiousAndroidManifest(in);}
+        public StudiousAndroidManifest[] newArray(int size){return new StudiousAndroidManifest[size];}
+    };
 
 }
