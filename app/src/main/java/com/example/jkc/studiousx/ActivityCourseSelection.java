@@ -91,7 +91,6 @@ public class ActivityCourseSelection extends ListActivity {
         inflater.inflate(R.menu.context_menu_courses,menu);
     }
 
-    //TODO Remove debug information // onContextItemSelected
     @Override
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
