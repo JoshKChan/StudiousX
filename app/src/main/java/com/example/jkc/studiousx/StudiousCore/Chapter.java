@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * Created by Joshua on 07/01/2015.
+ *
  */
 public class Chapter implements Serializable {
 
@@ -25,8 +26,8 @@ public class Chapter implements Serializable {
 
     /*
         Name can be anything, just not empty.
-        Number can be anything above 0. 1 is the default for the first new chapter, but 0 can be set
-            explicitly to represent something like an introductory chapter.
+        Number can be anything above 0. 1 is the default for the first new chapterName, but 0 can be set
+            explicitly to represent something like an introductory chapterName.
      */
     public static boolean isValid(Chapter chapter){
         boolean out = false;
@@ -35,6 +36,20 @@ public class Chapter implements Serializable {
             out = true;
         }
         return out;
+    }
+
+    public ChapterInfo produceChapterInfo(){
+        ChapterInfo chapterInfo = new ChapterInfo();
+        chapterInfo.setName(name);
+        chapterInfo.setDescription(description);
+        chapterInfo.setNumber(number);
+        return chapterInfo;
+    }
+
+    public void updateInfo(ChapterInfo chapterInfo){
+        setName(chapterInfo.getName());
+        setDescription(chapterInfo.getDescription());
+        setNumber(chapterInfo.getNumber());
     }
 
     public String getName(){
@@ -50,11 +65,15 @@ public class Chapter implements Serializable {
     public int getNumber(){return number;}
     public int getQuestionCount(){return questions.length;}
 
-    public void setName(String iName){
-        name = iName;
+    public void setName(String in){
+        if(in!=null&&!in.isEmpty()){
+            name=in;
+        }
     }
     public void setDescription(String desc){
-        description = desc;
+        if(desc!=null&&!desc.isEmpty()){
+            description = desc;
+        }
     }
     public void setNumber(int iNumber){number = iNumber;}
 

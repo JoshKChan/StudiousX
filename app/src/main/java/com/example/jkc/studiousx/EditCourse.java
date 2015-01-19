@@ -3,7 +3,6 @@ package com.example.jkc.studiousx;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,7 +32,7 @@ public class EditCourse extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_course);
         Intent intent = getIntent();
-        String filePath = intent.getStringExtra(ActivityCourseSelection.EXTRA_COURSE_PATH);
+        String filePath = intent.getStringExtra(ActivityCourse.EXTRA_COURSE_PATH);
         prepareViewHolder();
         colorSpinnerManager = new ColorSpinnerManager(this,viewHolder.colorSpinner);
         if(filePath!=null){

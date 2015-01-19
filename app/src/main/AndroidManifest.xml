@@ -43,6 +43,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.jkc.studiousx.ActivityCourseSelection" />
         </activity>
+        <activity
+            android:name="com.example.jkc.studiousx.EditChapter"
+            android:label="@string/title_activity_edit_chapter"
+            android:parentActivityName="com.example.jkc.studiousx.ActivityCourse" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jkc.studiousx.ActivityCourse" />
+        </activity>
+        <activity
+            android:name="com.example.jkc.studiousx.ActivityChapter"
+            android:label="@string/title_activity_activity_chapter"
+            android:parentActivityName="com.example.jkc.studiousx.ActivityCourse" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.jkc.studiousx.ActivityCourse" />
+        </activity>
     </application>
 
 </manifest>

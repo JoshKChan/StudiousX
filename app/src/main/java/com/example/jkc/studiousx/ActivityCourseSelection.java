@@ -10,13 +10,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.jkc.studiousx.ListAdapters.CourseAdapter;
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidFileManager;
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidManifest;
+import com.example.jkc.studiousx.Support.HierarchyRecord;
 
 import java.io.File;
 
@@ -27,18 +27,15 @@ import java.io.File;
  */
 public class ActivityCourseSelection extends ListActivity {
 
-    public static final String EXTRA_COURSE_PATH = "com.jkc.studious.EXTRA_COURSE_PATH";
     private static final int REQUEST_NEW_COURSE = 100;
     private static final int REQUEST_EDIT_COURSE = 101;
 
-    private EditText editText;
     private CourseAdapter courseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courseselection);
-        editText = (EditText)findViewById(R.id.courses_edittext);
         //Set adapter//////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////////////////////////
         StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
@@ -178,14 +175,17 @@ public class ActivityCourseSelection extends ListActivity {
     public void openCourse(int index){
         File file = courseAdapter.getItem(index);
         Intent intent = new Intent(this, ActivityCourse.class);
-        intent.putExtra(EXTRA_COURSE_PATH,file.getAbsolutePath());
+        StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
+        HierarchyRecord record = new HierarchyRecord(sAFM.getCoursesDirPath());
+        record.setCourseName(file.getName());
+        intent.putExtra(ActivityCourse.EXTRA_HEIRARCHY_RECORD,record);
         startActivity(intent);
     }
 
     public void editCourse(int index){
         File file = courseAdapter.getItem(index);
         Intent intent = new Intent(this,EditCourse.class);
-        intent.putExtra(EXTRA_COURSE_PATH,file.getAbsolutePath());
+        intent.putExtra(ActivityCourse.EXTRA_COURSE_PATH,file.getAbsolutePath());
         startActivityForResult(intent,REQUEST_EDIT_COURSE);
     }
 
@@ -199,21 +199,6 @@ public class ActivityCourseSelection extends ListActivity {
             courseAdapter.notifyDataSetChanged();
         }else{
             Toast.makeText(this,"Error during deletion",Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void addPress(View view){
-        String text = editText.getText().toString();
-        if(text!=null&&!text.isEmpty()) {
-            editText.setText("");
-            //Directory creation
-            StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
-            int result = sAFM.createCourse(text);
-            if(result == 0) {
-                File file = sAFM.findCourseDir(text);
-                courseAdapter.add(file);
-                courseAdapter.notifyDataSetChanged();
-            }
         }
     }
 

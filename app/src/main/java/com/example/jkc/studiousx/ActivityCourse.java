@@ -8,26 +8,28 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.jkc.studiousx.ListAdapters.ChapterAdapter;
 import com.example.jkc.studiousx.StudiousCore.Chapter;
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidFileManager;
 import com.example.jkc.studiousx.StudiousCore.StudiousAndroidManifest;
-
-import org.w3c.dom.Text;
+import com.example.jkc.studiousx.Support.HierarchyRecord;
 
 import java.io.File;
-import java.util.ArrayList;
 
 
 public class ActivityCourse extends ListActivity {
 
+    public static final String EXTRA_COURSE_PATH = "com.jkc.studious.EXTRA_COURSE_PATH";
+    public static final String EXTRA_HEIRARCHY_RECORD = "com.jkc.studious.EXTRA_RECORD";
     private static final int REQUEST_EDIT_COURSE = 100;
 
     private StudiousAndroidManifest manifest;
+    private HierarchyRecord hierarchyRecord;
     private ChapterAdapter chapterAdapter;
 
     @Override
@@ -35,25 +37,41 @@ public class ActivityCourse extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
         Intent intent = getIntent();
-        String path = intent.getStringExtra(ActivityCourseSelection.EXTRA_COURSE_PATH);
-        File file = new File(path);
-        if(file.exists()) {
-            StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
-            setTitle(file.getName());
+        hierarchyRecord = intent.getParcelableExtra(EXTRA_HEIRARCHY_RECORD);
+        String path = hierarchyRecord.getCoursePath();
+        if(path!=null){
+            File file = new File(path);
+            if(file.exists()) {
+                StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
+                setTitle(file.getName());
 
-            manifest = sAFM.getManifestFromCourse(file);
-            if(manifest!=null){
-                chapterAdapter = new ChapterAdapter(this,sAFM.getCourseChapters(manifest.getName()));
-                setListAdapter(chapterAdapter);
-                //chapterAdapter = new ChapterAdapter(this,);
+                manifest = sAFM.getManifestFromCourse(file);
+                if(manifest!=null){
+                    chapterAdapter = new ChapterAdapter(this,sAFM.getCourseChapters(manifest.getName()));
+                    setListAdapter(chapterAdapter);
+                    //chapterAdapter = new ChapterAdapter(this,);
+                }else{
+                    Toast.makeText(this,"Error opening course",Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             }else{
                 Toast.makeText(this,"Error opening course",Toast.LENGTH_SHORT).show();
                 finish();
             }
-        }else{
-            Toast.makeText(this,"Error opening course",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(this,"Unable to load course...",Toast.LENGTH_SHORT).show();
             finish();
         }
+
+        AdapterView.OnItemClickListener listItemClick = new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView parent, View v, int position, long id) {
+                openChapter(position);
+            }
+        };
+        ListView listView = getListView();
+        listView.setOnItemClickListener(listItemClick);
+        registerForContextMenu(listView);
     }
 
     @Override
@@ -76,7 +94,7 @@ public class ActivityCourse extends ListActivity {
             if(manifest!=null) {
                 File file = new StudiousAndroidFileManager(this).findCourseDir(manifest.getName());
                 Intent intent = new Intent(this, EditCourse.class);
-                intent.putExtra(ActivityCourseSelection.EXTRA_COURSE_PATH,file.getAbsolutePath());
+                intent.putExtra(EXTRA_COURSE_PATH,file.getAbsolutePath());
                 startActivityForResult(intent,REQUEST_EDIT_COURSE);
             }
         }
@@ -95,6 +113,7 @@ public class ActivityCourse extends ListActivity {
                     sAFM.rewriteManifest(manifest.getName(),newManifest);
                     manifest = newManifest;
                     setTitle(manifest.getName());
+                    hierarchyRecord.setCourseName(manifest.getName());
                     toastText = "Changes to course saved";
                 }else{
                     toastText = "Error editing course, invalid manifest";
@@ -106,6 +125,18 @@ public class ActivityCourse extends ListActivity {
         }
     }
 
+    //Create a path that leads to the chapterName file. Pass that path as an extra.
+    //ChapterActivity uses this path to try and load a chapterName.
+    private void openChapter(int index){
+        Chapter chapter = chapterAdapter.getItem(index);
+        Intent intent = new Intent(this,ActivityChapter.class);
+        hierarchyRecord.setChapterName(chapter.getName());
+        intent.putExtra(EXTRA_HEIRARCHY_RECORD, hierarchyRecord);
+        intent.putExtra(ActivityChapter.MANIFEST_EXTRA,manifest);
+        startActivity(intent);
+    }
+
+    //DELETE once not needed
     public void addPress(View view){
         String name = ((EditText)findViewById(R.id.chapters_edittext)).getText().toString();
         if(name!=null && !name.isEmpty()){

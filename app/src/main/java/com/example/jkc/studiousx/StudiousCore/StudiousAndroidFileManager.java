@@ -1,7 +1,6 @@
 package com.example.jkc.studiousx.StudiousCore;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
@@ -13,11 +12,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.ObjectInput;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +30,8 @@ import java.util.Arrays;
 public class StudiousAndroidFileManager extends StudiousFileManager {
 
     private Context context;
+
+    private static final String CHAPTER_FILE_EXTENSION = ".ch";
 
     public StudiousAndroidFileManager(Context context){
         this.context = context;
@@ -56,6 +54,10 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
             coursesFolder.mkdir();
         }
         return coursesFolder;
+    }
+
+    public String getCoursesDirPath(){
+        return getCoursesDir().getAbsolutePath();
     }
 
     /*
@@ -90,7 +92,7 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         return out;
     }
 
-    //Returns a collection of all the files in courses
+    //zReturns a collection of all the files in courses
     public ArrayList<File> getCourseFiles(){
         return new ArrayList<File>(Arrays.asList(getCoursesDir().listFiles()));
     }
@@ -101,11 +103,20 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         if(courseFolder!=null && courseFolder.exists()){
             File[] files = courseFolder.listFiles();
             for(File file:files){
-                if(getExtension(file).equals("ch")){
+                if(getExtension(file).equals(CHAPTER_FILE_EXTENSION)){
                     Log.w("sAFM","Passed "+file.getName());
                     out.add(loadChapterFromFile(file));
                 }
             }
+        }
+        return out;
+    }
+
+    public Chapter loadChapter(String path){
+        Chapter out = null;
+        File file = new File(path);
+        if(file.exists()&&getExtension(file).equals(CHAPTER_FILE_EXTENSION)){
+            out = loadChapterFromFile(file);
         }
         return out;
     }
@@ -138,7 +149,7 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
             int pathLength = path.length();
             for(int i=pathLength-1;i>0;i--){
                 if(path.charAt(i)=='.'){
-                    for(int a=i+1;a<pathLength;a++){
+                    for(int a=i;a<pathLength;a++){
                         tempExtension += path.charAt(a);
                     }
                     break;
@@ -317,19 +328,23 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
     }
 
     public void saveChapter(Chapter chapter, StudiousAndroidManifest manifest){
+        saveChapter(chapter,manifest,chapter.getName());
+    }
+
+    public void saveChapter(Chapter chapter, StudiousAndroidManifest manifest, String oldName){
         if(chapter!=null){
             try{
                 String path = findCourseDir(manifest.getName()).getAbsolutePath();
-                FileOutputStream fout = new FileOutputStream(path+"/"+chapter.getName()+".ch");
+                FileOutputStream fout = new FileOutputStream(path+"/"+oldName+CHAPTER_FILE_EXTENSION);
                 ObjectOutputStream oos = new ObjectOutputStream(fout);
                 oos.writeObject(chapter);
                 oos.close();
-                toast("Saved chapter");
+                toast("Saved chapterName");
             }catch (Exception e){
                 e.printStackTrace();
             }
         }else{
-            toast("Can't save chapter; null chapter");
+            toast("Can't save chapterName; null chapterName");
         }
     }
 

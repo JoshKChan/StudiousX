@@ -7,5 +7,7 @@
     <string name="title_activity_activity_courses">Courses</string>
     <string name="title_activity_activity_course">Course</string>
     <string name="title_activity_edit_course">EditCourse</string>
+    <string name="title_activity_edit_chapter">EditChapter</string>
+    <string name="title_activity_activity_chapter">ActivityChapter</string>
 
 </resources>

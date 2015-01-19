@@ -9,27 +9,6 @@
     android:orientation="vertical"
     tools:context="com.example.jkc.studiousx.ActivityCourseSelection">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/linearLayout">
-
-        <EditText android:id="@+id/courses_edittext"
-            android:hint="Enter text here"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="4" />
-        <Button android:id="@+id/courses_button_add"
-            android:text="ADD"
-            android:onClick="addPress"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        </LinearLayout>
-
     <ListView  android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
