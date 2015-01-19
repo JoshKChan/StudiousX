@@ -10,14 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-
-/*
-    You were figuring out to how create/manage files on external memory.
-    https://developer.android.com/guide/topics/data/data-storage.html#AccessingExtFiles
-
-    You were building the Home activity interface so you could begin to test Course creation.
-
- */
 public class Home extends Activity {
 
     @Override
