@@ -161,10 +161,6 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         return out;
     }
 
-    /**
-     * Create a course using a given manifest.
-     * @param manifest  The manifest to base the course off of.
-     */
     public void createCourseFromManifest(StudiousAndroidManifest manifest){
         if(StudiousAndroidManifest.isValid(manifest)){
             String courseName = manifest.getName();
@@ -176,13 +172,6 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         }
     }
 
-    /**
-     * Return a file with matching name.
-     *
-     * @param name Name of the directory to look return.
-     * @return     The directory with matching name.
-     *             Null if the directory cannot be found.
-     */
     public File findCourseDir(String name){
         File file = null;
         ArrayList<File> files = getCourseFiles();
@@ -218,7 +207,6 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         return manifest;
     }
 
-    //TODO Clean
     private StudiousAndroidManifest generateManifest(XmlPullParser parser){
         StudiousAndroidManifest manifest = null;
         ManifestScaffold scaffold = new ManifestScaffold();
@@ -252,7 +240,6 @@ public class StudiousAndroidFileManager extends StudiousFileManager {
         return manifest;
     }
 
-    //TODO Keep an eye on this. Seems like it works. Tested with directories and subdirectories. NOT tested with actual files.
     public boolean deleteFile(File file){
         boolean success = false;
         if(file!=null && file.exists()){

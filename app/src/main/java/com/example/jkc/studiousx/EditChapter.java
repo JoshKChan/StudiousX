@@ -10,12 +10,6 @@ import android.widget.EditText;
 
 import com.example.jkc.studiousx.StudiousCore.ChapterInfo;
 
-/**
- * Class for editing Chapters.
- * If initialized with a ChapterInfo object as an extra, that is implied that EditChapter is being used to
- * edit a course rather than create a new one, and that ChapterInfo's fields will be used to pre-populate
- * fields where possible(non-null).
- */
 public class EditChapter extends Activity {
 
     public static final String EXTRA_CHAPTERINFO_IN = "com.jkc.studious.CHAPTER_INFO_EXTRA_IN";

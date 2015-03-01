@@ -24,7 +24,6 @@ public class ChapterInfo implements Parcelable {
 
     private ChapterInfo(Parcel in){
         this();
-        //this.whaterver = in.readWhatever
         name = in.readString();
         description = in.readString();
         number = in.readInt();

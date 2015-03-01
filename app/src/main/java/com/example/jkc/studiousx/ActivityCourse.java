@@ -136,7 +136,6 @@ public class ActivityCourse extends ListActivity {
         startActivity(intent);
     }
 
-    //DELETE once not needed
     public void addPress(View view){
         String name = ((EditText)findViewById(R.id.chapters_edittext)).getText().toString();
         if(name!=null && !name.isEmpty()){

@@ -54,7 +54,6 @@ public class ChapterAdapter extends ArrayAdapter<Chapter>{
 //            viewHolder.number.setText(chapterName.getNumber());
             }
         }
-        Log.w("ChapterAdapter","Rendered view...");
         return convertView;
     }
 

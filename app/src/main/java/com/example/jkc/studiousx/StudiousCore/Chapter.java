@@ -24,11 +24,6 @@ public class Chapter implements Serializable {
         questions = null;
     }
 
-    /*
-        Name can be anything, just not empty.
-        Number can be anything above 0. 1 is the default for the first new chapterName, but 0 can be set
-            explicitly to represent something like an introductory chapterName.
-     */
     public static boolean isValid(Chapter chapter){
         boolean out = false;
         if(chapter.getName() !=null && !chapter.getName().isEmpty()

@@ -34,7 +34,6 @@ public class ActivityChapter extends Activity {
             chapter = sAFM.loadChapter(path);
             populateUI();
         }else{
-            //Path is null. Can't start the class. End activity and move up stack.
             Toast.makeText(this,"Error loading chapterName going back...",Toast.LENGTH_SHORT).show();
             finish();
         }

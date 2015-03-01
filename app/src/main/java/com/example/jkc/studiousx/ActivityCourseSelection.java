@@ -20,11 +20,6 @@ import com.example.jkc.studiousx.Support.HierarchyRecord;
 
 import java.io.File;
 
-/*
-    TOOD -Make Manifest parcelable
-         -Implement ForResult on ActivityCourse and ActivityCourseSelection
-         -Implement ForResult on EditCourse
- */
 public class ActivityCourseSelection extends ListActivity {
 
     private static final int REQUEST_NEW_COURSE = 100;
@@ -36,13 +31,9 @@ public class ActivityCourseSelection extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courseselection);
-        //Set adapter//////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////
         StudiousAndroidFileManager sAFM = new StudiousAndroidFileManager(this);
         courseAdapter = new CourseAdapter(this,sAFM.getCourseFiles());
         setListAdapter(courseAdapter);
-        //Set list-view mouse listeners////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////////////////////////
         AdapterView.OnItemClickListener listItemClick = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id) {
@@ -54,10 +45,6 @@ public class ActivityCourseSelection extends ListActivity {
         registerForContextMenu(listview);
     }
 
-    /*
-        Update the contents of the courseAdapter by clearing it then repopulating it.
-            Better to: Get list of files then compare that to set of files in adapter. Add the disjoint to the courseAdapter. Faster or not...?
-     */
     @Override
     public void onResume(){
         super.onResume();
@@ -65,15 +52,7 @@ public class ActivityCourseSelection extends ListActivity {
         courseAdapter.addAll(new StudiousAndroidFileManager(this).getCourseFiles());
         courseAdapter.notifyDataSetChanged();
     }
-
-    /*
-        Defines what happens when a context menu is created.
-        Note that there is no variation dependant on the view that invokes the context menu, since there ought not to be anything that
-        invokes a context menu except for the ListView.
-
-        Set the title of the menu to the name of the file, "???" if for some reason no file is retrieved.
-        Then inflate the rest of the menu using its XML layout.
-     */
+    
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo){
         super.onCreateContextMenu(menu,v,menuInfo);
@@ -123,7 +102,6 @@ public class ActivityCourseSelection extends ListActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //todo clean this sick filth
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode,resultCode,data);

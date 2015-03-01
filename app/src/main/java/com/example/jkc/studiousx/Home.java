@@ -44,26 +44,8 @@ public class Home extends Activity {
     }
 
     private void initialize(){
-        //externalAttempt();
-        //StudiousAndroidFileManager safm = new StudiousAndroidFileManager(this);
-        //safm.initialize();
         Intent intent = new Intent(this, ActivityCourseSelection.class);
         startActivity(intent);
     }
 
-    private void internalAttempt(){
-
-    }
-
-    private void externalAttempt(){
-        debugPrint("Init begin");
-        String state = Environment.getExternalStorageState();
-        debugPrint(state);
-        //TextView t = (TextView)findViewById(R.id.home_text);
-        //t.setText(state);
-    }
-
-    private void debugPrint(String text){
-        Log.e("Home",">>"+text);
-    }
 }
